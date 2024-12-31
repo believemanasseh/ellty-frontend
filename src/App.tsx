@@ -6,11 +6,11 @@ import "./App.css";
 export default function App() {
   const [messageApi, contextHolder] = message.useMessage();
   const [checked, setChecked] = useState({
+    all: false,
     one: false,
     two: false,
     three: false,
     four: false,
-    all: false,
   });
 
   function handleChange(name: string) {
@@ -19,11 +19,11 @@ export default function App() {
         setChecked({ ...checked, all: !checked.all });
       } else {
         setChecked({
+          all: true,
           one: true,
           two: true,
           three: true,
           four: true,
-          all: true,
         });
       }
     } else {

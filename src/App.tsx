@@ -12,8 +12,10 @@ export default function App() {
   });
 
   function handleChange(name: string) {
-    if (name === "all") {
-      if (!checked.one) {
+    if (name === "one") {
+      if (checked.one) {
+        setChecked({ ...checked, one: !checked.one });
+      } else {
         setChecked({
           one: true,
           two: true,
@@ -21,8 +23,6 @@ export default function App() {
           four: true,
           five: true,
         });
-      } else {
-        setChecked({ ...checked, one: !checked.one });
       }
     } else {
       switch (name) {
@@ -52,7 +52,7 @@ export default function App() {
           type="checkbox"
           className="custom-checkbox"
           checked={checked.one}
-          onChange={() => handleChange("all")}
+          onChange={() => handleChange("one")}
         />
       </div>
       <div className="pages">

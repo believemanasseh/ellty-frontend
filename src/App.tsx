@@ -1,31 +1,36 @@
 import { useState } from "react";
+import { message } from "antd";
 import styled from "styled-components";
 import "./App.css";
 
 export default function App() {
+  const [messageApi, contextHolder] = message.useMessage();
   const [checked, setChecked] = useState({
     one: false,
     two: false,
     three: false,
     four: false,
-    five: false,
+    all: false,
   });
 
   function handleChange(name: string) {
-    if (name === "one") {
+    if (name === "all") {
       if (checked.one) {
-        setChecked({ ...checked, one: !checked.one });
+        setChecked({ ...checked, all: !checked.all });
       } else {
         setChecked({
           one: true,
           two: true,
           three: true,
           four: true,
-          five: true,
+          all: true,
         });
       }
     } else {
       switch (name) {
+        case "one":
+          setChecked({ ...checked, one: !checked.one });
+          break;
         case "two":
           setChecked({ ...checked, two: !checked.two });
           break;
@@ -35,66 +40,93 @@ export default function App() {
         case "four":
           setChecked({ ...checked, four: !checked.four });
           break;
-        case "five":
-          setChecked({ ...checked, five: !checked.five });
-          break;
         default:
           console.log("Defaults");
       }
     }
   }
 
+  function handleClick() {
+    const pages = [];
+    const previous = [];
+
+    for (const [key, value] of Object.entries(checked)) {
+      previous.push([key, value]);
+      if (value) {
+        pages.push(previous[previous.length - 1][0]);
+      }
+    }
+
+    if (
+      (pages.includes("all") && pages.length === 5) ||
+      (!pages.includes("all") && pages.length === 4)
+    ) {
+      messageApi.open({
+        type: "success",
+        content: `You chose all the pages!`,
+      });
+    } else {
+      messageApi.open({
+        type: "success",
+        content: `You chose the following pages: ${pages.join(", ")}`,
+      });
+    }
+  }
+
   return (
-    <StyledComponent>
-      <div className="all">
-        <p>All pages</p>
-        <input
-          type="checkbox"
-          className="custom-checkbox"
-          checked={checked.one}
-          onChange={() => handleChange("one")}
-        />
-      </div>
-      <div className="pages">
-        <div className="page">
-          <p>Page 1</p>
+    <>
+      {contextHolder}
+      <StyledComponent>
+        <div className="all">
+          <p>All pages</p>
           <input
             type="checkbox"
-            checked={checked.two}
             className="custom-checkbox"
-            onChange={() => handleChange("two")}
+            checked={checked.all}
+            onChange={() => handleChange("all")}
           />
         </div>
-        <div className="page">
-          <p>Page 2</p>
-          <input
-            type="checkbox"
-            checked={checked.three}
-            className="custom-checkbox"
-            onChange={() => handleChange("three")}
-          />
+        <div className="pages">
+          <div className="page">
+            <p>Page 1</p>
+            <input
+              type="checkbox"
+              checked={checked.one}
+              className="custom-checkbox"
+              onChange={() => handleChange("one")}
+            />
+          </div>
+          <div className="page">
+            <p>Page 2</p>
+            <input
+              type="checkbox"
+              checked={checked.two}
+              className="custom-checkbox"
+              onChange={() => handleChange("two")}
+            />
+          </div>
+          <div className="page">
+            <p>Page 3</p>
+            <input
+              type="checkbox"
+              checked={checked.three}
+              className="custom-checkbox"
+              onChange={() => handleChange("three")}
+            />
+          </div>
+          <div className="page">
+            <p>Page 4</p>
+            <input
+              type="checkbox"
+              checked={checked.four}
+              className="custom-checkbox"
+              onChange={() => handleChange("four")}
+            />
+          </div>
         </div>
-        <div className="page">
-          <p>Page 3</p>
-          <input
-            type="checkbox"
-            checked={checked.four}
-            className="custom-checkbox"
-            onChange={() => handleChange("four")}
-          />
-        </div>
-        <div className="page">
-          <p>Page 4</p>
-          <input
-            type="checkbox"
-            checked={checked.five}
-            className="custom-checkbox"
-            onChange={() => handleChange("five")}
-          />
-        </div>
-      </div>
-      <button>Done</button>
-    </StyledComponent>
+        <button onClick={handleClick}>Done</button>
+      </StyledComponent>
+    </>
   );
 }
 
